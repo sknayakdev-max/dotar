@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "npx tsx scripts/ensure-admin.ts && next dev",
-    "build": "next build",
+    "build": "npx @cloudflare/next-on-pages",
+    "build:next": "next build",
     "pages:build": "npx @cloudflare/next-on-pages",
+    "deploy": "npm run build && npx wrangler pages deploy .vercel/output/static",
     "start": "npx tsx scripts/ensure-admin.ts && next start",
     "lint": "eslint"
   },

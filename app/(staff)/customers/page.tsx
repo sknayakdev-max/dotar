@@ -16,7 +16,7 @@ export default async function CustomersPage() {
     await getAuthenticatedUser();
 
   if (!user) {
-    redirect("/auth");
+    redirect("/");
   }
 
   const role =

@@ -12,7 +12,7 @@ export default async function DashboardPage() {
   const user = await getAuthenticatedUser();
 
   if (!user) {
-    redirect("/auth");
+    redirect("/");
   }
 
   const role = String(user.role).toLowerCase();

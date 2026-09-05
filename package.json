@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "npx tsx scripts/ensure-admin.ts && next dev",
     "build": "next build",
+    "build:next": "next build",
     "pages:build": "npx @cloudflare/next-on-pages",
+    "deploy": "npm run pages:build && npx wrangler pages deploy .vercel/output/static",
     "start": "npx tsx scripts/ensure-admin.ts && next start",
     "lint": "eslint"
   },

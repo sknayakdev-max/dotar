@@ -24,24 +24,25 @@ export type NavigationItem = {
 };
 
 const adminNavigation: NavigationItem[] = [
-  { title: "Dashboard", href: "/staff/dashboard", icon: LayoutDashboard },
-  { title: "Service Requests", href: "/staff/requests", icon: ClipboardList },
-  { title: "Repairs", href: "/staff/repairs", icon: Wrench },
-  { title: "Customers", href: "/staff/customers", icon: Users },
-  { title: "Devices", href: "/staff/devices", icon: Laptop },
-  { title: "Inventory", href: "/staff/inventory", icon: Package },
-  { title: "Payments", href: "/staff/payments", icon: CreditCard },
-  { title: "Invoices", href: "/staff/invoices", icon: FileText },
-  { title: "Employees", href: "/staff/employees", icon: UserCog },
-  { title: "Users", href: "/staff/users", icon: Users },
-  { title: "Reports", href: "/staff/reports", icon: BarChart3 },
-  { title: "Activity Logs", href: "/staff/activity", icon: Activity },
-  { title: "Notifications", href: "/staff/notifications", icon: Bell },
-  { title: "Settings", href: "/staff/settings", icon: Settings },
+  { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { title: "Service Requests", href: "/requests", icon: ClipboardList },
+  { title: "Repairs", href: "/repairs", icon: Wrench },
+  { title: "Customers", href: "/customers", icon: Users },
+  { title: "Devices", href: "/devices", icon: Laptop },
+  { title: "Inventory", href: "/inventory", icon: Package },
+  { title: "Payments", href: "/payments", icon: CreditCard },
+  { title: "Invoices", href: "/invoices", icon: FileText },
+  { title: "Employees", href: "/employees", icon: UserCog },
+  { title: "Users", href: "/users", icon: Users },
+  { title: "Reports", href: "/reports", icon: BarChart3 },
+  { title: "Activity Logs", href: "/activity", icon: Activity },
+  { title: "Notifications", href: "/notifications", icon: Bell },
+  { title: "Settings", href: "/settings", icon: Settings },
 ];
 
 export const dashboardNavigation: Record<UserRole, NavigationItem[]> = {
   ADMIN: adminNavigation,
+  super_admin: adminNavigation, // <-- Added missing property required by UserRole
   MANAGER: adminNavigation.filter((item) =>
     [
       "Dashboard",

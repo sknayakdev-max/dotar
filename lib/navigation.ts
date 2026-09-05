@@ -1,4 +1,3 @@
-// lib/navigation.ts
 import {
   Activity,
   BarChart3,
@@ -42,6 +41,7 @@ const adminNavigation: NavigationItem[] = [
 
 export const dashboardNavigation: Record<UserRole, NavigationItem[]> = {
   ADMIN: adminNavigation,
+  super_admin: adminNavigation, // <-- Added missing required property
   MANAGER: adminNavigation.filter((item) =>
     [
       "Dashboard",

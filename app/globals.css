@@ -3979,6 +3979,65 @@ input[type="search"]::-webkit-search-cancel-button {
   gap: 19px;
 }
 
+.module-overview-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.module-overview-card {
+  min-height: 82px;
+  padding: 17px 19px;
+  border: 1px solid #e0e8ee;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.module-overview-card span {
+  display: block;
+  color: #7b8da0;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.module-overview-card strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--navy);
+  font-size: 20px;
+}
+
+.module-search {
+  width: 240px;
+  margin-right: auto;
+}
+
+.module-status {
+  display: inline-flex;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #e9f5ed;
+  color: #42805d;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.module-open-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #346f9f;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.module-open-link:hover {
+  color: var(--navy);
+}
+
 .toolbar-count {
   display: inline-flex;
   align-items: center;
@@ -4507,6 +4566,15 @@ input[type="search"]::-webkit-search-cancel-button {
 
   .payment-summary-row {
     grid-template-columns: 1fr;
+  }
+
+  .module-overview-row {
+    grid-template-columns: 1fr;
+  }
+
+  .module-search {
+    width: 100%;
+    margin-right: 0;
   }
 }
 

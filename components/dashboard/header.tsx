@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Bell, Search } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
@@ -55,15 +56,15 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         </div>
 
         {/* Notification */}
-        <button
+        <Link
+          href="/notifications"
           className="dashboard-icon-button"
           aria-label="Notifications"
-          type="button"
         >
           <Bell size={20} />
 
           <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
-        </button>
+        </Link>
 
         {/* Profile */}
         <div className="dashboard-profile">

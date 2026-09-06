@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import {
   Activity,
   BarChart3,
-  Bell,
   ClipboardList,
   CreditCard,
   FileText,
@@ -38,16 +37,14 @@ const adminItems: NavigationItem[] = [
   { href: "/payments", label: "Payments", icon: CreditCard },
   { href: "/invoices", label: "Invoices", icon: FileText },
   { href: "/employees", label: "Employees", icon: UserCog },
-  { href: "/users", label: "Users", icon: Users },
   { href: "/reports", label: "Reports", icon: BarChart3 },
   { href: "/activity", label: "Activity Logs", icon: Activity },
-  { href: "/notifications", label: "Notifications", icon: Bell },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 const managerItems: NavigationItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
-  { href: "/requests", label: "Service Requests", icon: ClipboardList },
+  { href: "/service-requests", label: "Service Requests", icon: ClipboardList },
   { href: "/repairs", label: "Repairs", icon: Wrench },
   { href: "/customers", label: "Customers", icon: Users },
   { href: "/devices", label: "Devices", icon: Laptop },
@@ -56,16 +53,14 @@ const managerItems: NavigationItem[] = [
   { href: "/invoices", label: "Invoices", icon: FileText },
   { href: "/employees", label: "Employees", icon: UserCog },
   { href: "/reports", label: "Reports", icon: BarChart3 },
-  { href: "/notifications", label: "Notifications", icon: Bell },
 ];
 
 const employeeItems: NavigationItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
-  { href: "/requests", label: "Service Requests", icon: ClipboardList },
+  { href: "/service-requests", label: "Service Requests", icon: ClipboardList },
   { href: "/repairs", label: "Repairs", icon: Wrench },
   { href: "/customers", label: "Customers", icon: Users },
   { href: "/devices", label: "Devices", icon: Laptop },
-  { href: "/notifications", label: "Notifications", icon: Bell },
 ];
 
 // Explicitly type navigation using Record<UserRole, NavigationItem[]> if enforcing UserRole
@@ -76,7 +71,6 @@ const navigation: Record<UserRole | string, NavigationItem[]> = {
   super_admin: adminItems, // Added lowercase variant to satisfy Prisma/lowercase UserRole types
   MANAGER: managerItems,
   EMPLOYEE: employeeItems,
-  STAFF: employeeItems,
   USER: [],
 };
 
@@ -96,7 +90,7 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
     <aside className="dashboard-sidebar">
       {/* Brand */}
       <div className="dashboard-sidebar-brand">
-        <Link href="/staff/dashboard">
+        <Link href="/dashboard">
           <span>FixDesk</span>
         </Link>
       </div>
@@ -109,7 +103,7 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
         {items.map((item: NavigationItem) => {
           const Icon = item.icon;
 
-          const isDashboard = item.href === "/staff/dashboard";
+          const isDashboard = item.href === "/dashboard";
 
           const isActive = isDashboard
             ? pathname === "/staff/dashboard"

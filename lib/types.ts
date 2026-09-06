@@ -34,8 +34,7 @@ export type UserRole =
   | "super_admin" 
   | "ADMIN" 
   | "MANAGER" 
-  | "EMPLOYEE" 
-  | "USER";
+  | "EMPLOYEE";
 
 export type User = {
   id: string;

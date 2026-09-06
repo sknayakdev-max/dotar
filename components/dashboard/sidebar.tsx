@@ -17,7 +17,7 @@ import {
   Wrench,
 } from "lucide-react";
 
-import type { User } from "@/lib/types";
+import type { User, UserRole } from "@/lib/types";
 
 type NavigationItem = {
   href: string;
@@ -63,9 +63,12 @@ const employeeItems: NavigationItem[] = [
   { href: "/devices", label: "Devices", icon: Laptop },
 ];
 
-const navigation: Record<string, NavigationItem[]> = {
+// Explicitly type navigation using Record<UserRole, NavigationItem[]> if enforcing UserRole
+// Or use Partial<Record<string, NavigationItem[]>> to avoid strict key constraints:
+const navigation: Record<UserRole | string, NavigationItem[]> = {
   ADMIN: adminItems,
   SUPER_ADMIN: adminItems,
+  super_admin: adminItems, // Added lowercase variant to satisfy Prisma/lowercase UserRole types
   MANAGER: managerItems,
   EMPLOYEE: employeeItems,
   USER: [],
@@ -78,10 +81,10 @@ interface DashboardSidebarProps {
 export default function DashboardSidebar({ user }: DashboardSidebarProps) {
   const pathname = usePathname() || "";
 
-  // Normalize role string to uppercase so 'staff', 'admin', 'super_admin' lookup cleanly
   const normalizedRole = user?.role ? String(user.role).toUpperCase() : "USER";
 
-  const items = navigation[normalizedRole] || [];
+  // Fallback to normalized uppercase role first, then exact role string
+  const items = navigation[normalizedRole] || navigation[user?.role] || [];
 
   return (
     <aside className="dashboard-sidebar">

@@ -1,4 +1,3 @@
-// lib/navigation.ts
 import {
   Activity,
   BarChart3,

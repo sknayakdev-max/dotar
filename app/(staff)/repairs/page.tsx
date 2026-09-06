@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 
 import { getAuthenticatedUser } from "../dashboard/actions";
@@ -12,7 +13,7 @@ export default async function RepairsPage() {
   const user = await getAuthenticatedUser();
 
   if (!user) {
-    redirect("/auth");
+    redirect("/");
   }
 
   const role = String(user.role).toLowerCase();

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 
 import {
@@ -15,7 +16,7 @@ export default async function CustomersPage() {
     await getAuthenticatedUser();
 
   if (!user) {
-    redirect("/auth");
+    redirect("/");
   }
 
   const role =

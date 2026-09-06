@@ -1,6 +1,8 @@
 // app/(public)/layout.tsx
 import Link from "next/link";
 
+import PublicAuthLink from "@/components/public-auth-link";
+
 export default function PublicLayout({
   children,
 }: {
@@ -25,9 +27,7 @@ export default function PublicLayout({
           </nav>
 
           <div className="header-actions">
-            <Link href="/login" className="login-link">
-              Staff Login
-            </Link>
+            <PublicAuthLink />
             <Link href="/request-service" className="header-button">
               Request a Repair
             </Link>

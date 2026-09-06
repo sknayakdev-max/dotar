@@ -112,7 +112,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      router.push("/auth");
+      router.push("/");
       router.refresh();
     }
   };

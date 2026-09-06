@@ -5,6 +5,7 @@ import { Banknote, CreditCard, FileText, Plus, Search, X } from "lucide-react";
 
 import DashboardHeader from "@/components/dashboard/header";
 import DashboardSidebar from "@/components/dashboard/sidebar";
+import Toast from "@/components/toast";
 import type { User } from "@/lib/types";
 
 import { recordPaymentAction, type PaymentInput, type PaymentRepair } from "./actions";
@@ -27,7 +28,7 @@ export default function PaymentsClient({ user, initialRepairs, initialError }: P
 
   return <div className="staff-dashboard"><DashboardSidebar user={user} /><div className="dashboard-main"><DashboardHeader user={user} /><main className="dashboard-content">
     <div className="dashboard-welcome"><div><p className="dashboard-kicker">PAYMENTS & COLLECTIONS</p><h1>Payments</h1><p>Calculate repair charges, add GST, and record the customer payment.</p></div><div className="customer-header-actions"><div className="customer-search-box"><Search size={17} /><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search repairs..." aria-label="Search repairs" /></div><button type="button" className="new-repair-button" onClick={() => setCreating(true)}><Plus size={16} /> Take payment</button></div></div>
-    {error && <div className="dashboard-card customer-error"><p className="error-message">{error}</p></div>}
+    <Toast message={error} tone="error" onClose={() => setError("")} />
     <div className="payment-summary-row"><Summary label="Open repairs" value={repairs.length} icon={<FileText size={18} />} /><Summary label="Outstanding" value={money(outstanding)} icon={<CreditCard size={18} />} warning /></div>
     <div className="dashboard-card customer-table-card"><div className="customer-table-toolbar"><span className="toolbar-count">{filtered.length} {filtered.length === 1 ? "repair" : "repairs"}</span></div><div className="overflow-x-auto"><table className="data-table payment-table"><thead><tr><th>Repair</th><th>Customer</th><th>Estimate</th><th>Paid</th><th>Balance</th><th>Status</th><th>Action</th></tr></thead><tbody>{filtered.length ? filtered.map((repair) => { const balance = Math.max(0, repair.estimatedCost - repair.paidAmount); return <tr key={repair.id}><td><strong>{repair.repairNumber || "Repair"}</strong><span className="inventory-secondary">{repair.deviceName}</span></td><td>{repair.customerName}</td><td>{money(repair.estimatedCost)}</td><td>{money(repair.paidAmount)}</td><td><strong>{money(balance)}</strong></td><td><span className={`payment-status ${balance ? "due" : "paid"}`}>{balance ? "Payment due" : "Paid"}</span></td><td><button type="button" className="payment-action-button" onClick={() => setCreating(true)} disabled={!balance}>{balance ? "Collect" : "Complete"}</button></td></tr>; }) : <tr><td colSpan={7} className="customer-empty-cell"><div className="customer-empty"><div className="customer-empty-icon"><CreditCard /></div><h3>{search ? "No repairs found" : "No payment-ready repairs"}</h3><p>{search ? "Try a different search term." : "Repairs with charges will appear here."}</p></div></td></tr>}</tbody></table></div></div>
   </main></div>{creating && <PaymentModal repairs={repairs.filter((repair) => repair.estimatedCost > repair.paidAmount)} onClose={() => setCreating(false)} onSaved={paid} onError={setError} />}</div>;

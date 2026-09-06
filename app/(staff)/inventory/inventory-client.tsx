@@ -5,6 +5,7 @@ import { AlertTriangle, MapPin, Package, Pencil, Plus, Search, Trash2, X } from 
 
 import DashboardHeader from "@/components/dashboard/header";
 import DashboardSidebar from "@/components/dashboard/sidebar";
+import Toast from "@/components/toast";
 import type { User } from "@/lib/types";
 
 import {
@@ -72,7 +73,7 @@ export default function InventoryClient({ user, initialItems, initialError }: Pr
             </div>
           </div>
 
-          {error && <div className="dashboard-card customer-error"><p className="error-message">{error}</p></div>}
+          <Toast message={error} tone="error" onClose={() => setError("")} />
 
           <div className="inventory-summary-row">
             <Summary label="Total parts" value={items.length} icon={<Package size={18} />} />

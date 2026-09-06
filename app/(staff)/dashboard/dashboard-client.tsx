@@ -5,6 +5,7 @@ import { Package, Wrench } from "lucide-react";
 
 import DashboardSidebar from "@/components/dashboard/sidebar";
 import DashboardHeader from "@/components/dashboard/header";
+import Toast from "@/components/toast";
 
 import type {
   DashboardStats,
@@ -79,13 +80,7 @@ export default function DashboardClient({
               ERROR
           ================================================= */}
 
-          {initialError && (
-            <div className="dashboard-card">
-              <p className="error-message">
-                {initialError}
-              </p>
-            </div>
-          )}
+          <Toast message={initialError} tone="error" />
 
           {/* =================================================
               PRIMARY

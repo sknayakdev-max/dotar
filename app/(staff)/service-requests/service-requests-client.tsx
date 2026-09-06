@@ -15,6 +15,7 @@ import {
 
 import DashboardSidebar from "@/components/dashboard/sidebar";
 import DashboardHeader from "@/components/dashboard/header";
+import Toast from "@/components/toast";
 
 import type { User } from "@/lib/types";
 
@@ -185,13 +186,7 @@ export default function ServiceRequestsClient({
             }
           />
 
-          {error && (
-            <div className="dashboard-card">
-              <p className="error-message">
-                {error}
-              </p>
-            </div>
-          )}
+          <Toast message={error} tone="error" onClose={() => setError("")} />
 
           <div className="dashboard-card">
 

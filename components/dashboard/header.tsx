@@ -84,8 +84,20 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     }
 
     loadAlerts();
+    let refreshInterval = 30;
+    try {
+      const stored = window.localStorage.getItem("fixdesk-settings");
+      if (stored) {
+        refreshInterval = Number(JSON.parse(stored).alertRefresh) || 30;
+      }
+    } catch {
+      refreshInterval = 30;
+    }
+    const timer = window.setInterval(loadAlerts, refreshInterval * 1000);
+
     return () => {
       active = false;
+      window.clearInterval(timer);
     };
   }, []);
 

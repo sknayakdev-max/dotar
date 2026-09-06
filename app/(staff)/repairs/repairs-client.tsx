@@ -30,6 +30,16 @@ import {
   type DeviceOption,
   type EmployeeOption,
 } from "./actions";
+import {
+  createCustomerAction,
+  type CustomerInput,
+  type CustomerItem,
+} from "../customers/actions";
+import {
+  createDeviceAction,
+  type DeviceInput,
+  type CreatedDevice,
+} from "../devices/actions";
 
 type Props = {
   user: User;
@@ -51,10 +61,10 @@ export default function RepairsClient({
   const [repairs, setRepairs] =
     useState(initialRepairs);
 
-  const [customers] =
+  const [customers, setCustomers] =
     useState(initialCustomers);
 
-  const [devices] =
+  const [devices, setDevices] =
     useState(initialDevices);
 
   const [employees] =
@@ -466,6 +476,19 @@ export default function RepairsClient({
             setCreating(false);
             setEditing(null);
           }}
+          onCustomerCreated={(customer) => {
+            setCustomers((current) => [
+              {
+                id: customer.id,
+                name: customer.name,
+                phone: customer.phone,
+              },
+              ...current,
+            ]);
+          }}
+          onDeviceCreated={(device) => {
+            setDevices((current) => [...current, device]);
+          }}
         />
       )}
 
@@ -497,6 +520,8 @@ function RepairDrawer({
   employees,
   onClose,
   onSaved,
+  onCustomerCreated,
+  onDeviceCreated,
 }: {
   repair: RepairItem | null;
   customers: CustomerOption[];
@@ -506,6 +531,8 @@ function RepairDrawer({
   onSaved: (
     repair: RepairItem
   ) => void;
+  onCustomerCreated: (customer: CustomerItem) => void;
+  onDeviceCreated: (device: CreatedDevice) => void;
 }) {
   const [form, setForm] =
     useState<RepairForm>({
@@ -567,6 +594,12 @@ function RepairDrawer({
 
   const [error, setError] =
     useState("");
+
+  const [customerDialogOpen, setCustomerDialogOpen] =
+    useState(false);
+
+  const [deviceDialogOpen, setDeviceDialogOpen] =
+    useState(false);
 
   const filteredDevices =
     form.customerId
@@ -695,15 +728,18 @@ function RepairDrawer({
               label="Customer"
               value={form.customerId}
               onChange={(value) =>
-                update(
-                  "customerId",
-                  value
-                )
+                value === "__new_customer__"
+                  ? setCustomerDialogOpen(true)
+                  : update("customerId", value)
               }
               required
             >
               <option value="">
                 Select customer
+              </option>
+
+              <option value="__new_customer__">
+                + Add new customer
               </option>
 
               {customers.map(
@@ -725,14 +761,17 @@ function RepairDrawer({
               label="Device"
               value={form.deviceId}
               onChange={(value) =>
-                update(
-                  "deviceId",
-                  value
-                )
+                value === "__new_device__"
+                  ? setDeviceDialogOpen(true)
+                  : update("deviceId", value)
               }
             >
               <option value="">
                 Select device
+              </option>
+
+              <option value="__new_device__">
+                + Add new device
               </option>
 
               {filteredDevices.map(
@@ -1061,6 +1100,209 @@ function RepairDrawer({
 
       </aside>
 
+      {customerDialogOpen && (
+        <NewCustomerDialog
+          onClose={() => setCustomerDialogOpen(false)}
+          onCreated={(customer) => {
+            onCustomerCreated(customer);
+            update("customerId", customer.id);
+            setCustomerDialogOpen(false);
+          }}
+        />
+      )}
+
+      {deviceDialogOpen && (
+        <NewDeviceDialog
+          customerId={form.customerId}
+          onClose={() => setDeviceDialogOpen(false)}
+          onCreated={(device) => {
+            onDeviceCreated(device);
+            update("deviceId", device.id);
+            setDeviceDialogOpen(false);
+          }}
+        />
+      )}
+
+    </div>
+  );
+}
+
+function NewCustomerDialog({
+  onClose,
+  onCreated,
+}: {
+  onClose: () => void;
+  onCreated: (customer: CustomerItem) => void;
+}) {
+  const [form, setForm] = useState<CustomerInput>({
+    name: "",
+    phone: "",
+    email: "",
+    city: "",
+    address: "",
+  });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  function update(field: keyof CustomerInput, value: string) {
+    setForm((current) => ({ ...current, [field]: value }));
+  }
+
+  async function submit(event: React.FormEvent) {
+    event.preventDefault();
+    if (!form.name?.trim() || !form.phone?.trim()) {
+      setError("Name and phone are required.");
+      return;
+    }
+
+    setSaving(true);
+    setError("");
+    const result = await createCustomerAction(form);
+    if (result.error) {
+      setError(result.error);
+      setSaving(false);
+      return;
+    }
+
+    if (result.customer) onCreated(result.customer);
+  }
+
+  return (
+    <div className="customer-dialog-overlay">
+      <section className="customer-dialog" role="dialog" aria-modal="true" aria-labelledby="new-customer-title">
+        <div className="customer-drawer-header">
+          <div>
+            <p className="dashboard-kicker">CUSTOMER</p>
+            <h2 id="new-customer-title">Add new customer</h2>
+            <p className="customer-drawer-subtitle">Create the customer before saving this repair.</p>
+          </div>
+          <button type="button" className="customer-drawer-close" onClick={onClose} aria-label="Close new customer dialog"><X size={20} /></button>
+        </div>
+
+        <form className="customer-form" onSubmit={submit}>
+          {error && <div className="customer-form-error">{error}</div>}
+          <div className="customer-form-row">
+            <CustomerDialogField label="Name" value={form.name} onChange={(value) => update("name", value)} placeholder="Customer name" required />
+            <CustomerDialogField label="Phone" value={form.phone} onChange={(value) => update("phone", value)} placeholder="Phone number" required />
+          </div>
+          <div className="customer-form-row">
+            <CustomerDialogField label="Email" type="email" value={form.email || ""} onChange={(value) => update("email", value)} placeholder="Email address" />
+            <CustomerDialogField label="City" value={form.city || ""} onChange={(value) => update("city", value)} placeholder="City" />
+          </div>
+          <div className="customer-form-field">
+            <label>Address</label>
+            <textarea rows={3} value={form.address || ""} onChange={(event) => update("address", event.target.value)} placeholder="Full address" />
+          </div>
+          <div className="customer-form-actions">
+            <button type="button" className="customer-cancel-button" onClick={onClose} disabled={saving}>Cancel</button>
+            <button type="submit" className="customer-create-button" disabled={saving}>{saving ? "Creating..." : "Create customer"}</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  );
+}
+
+function CustomerDialogField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  type = "text",
+  required = false,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  type?: string;
+  required?: boolean;
+}) {
+  return (
+    <div className="customer-form-field">
+      <label>{label}{required ? " *" : ""}</label>
+      <input type={type} value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} required={required} />
+    </div>
+  );
+}
+
+function NewDeviceDialog({
+  customerId,
+  onClose,
+  onCreated,
+}: {
+  customerId: string;
+  onClose: () => void;
+  onCreated: (device: CreatedDevice) => void;
+}) {
+  const [form, setForm] = useState<DeviceInput>({
+    customerId,
+    name: "",
+    deviceType: "",
+    brand: "",
+    model: "",
+    serialNumber: "",
+    imei: "",
+    condition: "",
+    notes: "",
+  });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  function update(field: keyof DeviceInput, value: string) {
+    setForm((current) => ({ ...current, [field]: value }));
+  }
+
+  async function submit(event: React.FormEvent) {
+    event.preventDefault();
+    setSaving(true);
+    setError("");
+    const result = await createDeviceAction(form);
+    if (result.error) {
+      setError(result.error);
+      setSaving(false);
+      return;
+    }
+    if (result.device) onCreated(result.device);
+  }
+
+  return (
+    <div className="customer-dialog-overlay">
+      <section className="customer-dialog" role="dialog" aria-modal="true" aria-labelledby="new-device-title">
+        <div className="customer-drawer-header">
+          <div>
+            <p className="dashboard-kicker">DEVICE</p>
+            <h2 id="new-device-title">Add new device</h2>
+            <p className="customer-drawer-subtitle">Register the device for this customer before saving the repair.</p>
+          </div>
+          <button type="button" className="customer-drawer-close" onClick={onClose} aria-label="Close new device dialog"><X size={20} /></button>
+        </div>
+
+        <form className="customer-form" onSubmit={submit}>
+          {error && <div className="customer-form-error">{error}</div>}
+          <div className="customer-form-row">
+            <CustomerDialogField label="Device name" value={form.name} onChange={(value) => update("name", value)} placeholder="e.g. Customer laptop" required />
+            <CustomerDialogField label="Device type" value={form.deviceType || ""} onChange={(value) => update("deviceType", value)} placeholder="Laptop, phone, desktop..." />
+          </div>
+          <div className="customer-form-row">
+            <CustomerDialogField label="Brand" value={form.brand || ""} onChange={(value) => update("brand", value)} placeholder="Brand" />
+            <CustomerDialogField label="Model" value={form.model || ""} onChange={(value) => update("model", value)} placeholder="Model" />
+          </div>
+          <div className="customer-form-row">
+            <CustomerDialogField label="Serial number" value={form.serialNumber || ""} onChange={(value) => update("serialNumber", value)} placeholder="Serial number" />
+            <CustomerDialogField label="IMEI" value={form.imei || ""} onChange={(value) => update("imei", value)} placeholder="IMEI (if applicable)" />
+          </div>
+          <CustomerDialogField label="Condition" value={form.condition || ""} onChange={(value) => update("condition", value)} placeholder="Condition when received" />
+          <div className="customer-form-field">
+            <label>Notes</label>
+            <textarea rows={3} value={form.notes || ""} onChange={(event) => update("notes", event.target.value)} placeholder="Device notes" />
+          </div>
+          <div className="customer-form-actions">
+            <button type="button" className="customer-cancel-button" onClick={onClose} disabled={saving}>Cancel</button>
+            <button type="submit" className="customer-create-button" disabled={saving}>{saving ? "Creating..." : "Create device"}</button>
+          </div>
+        </form>
+      </section>
     </div>
   );
 }

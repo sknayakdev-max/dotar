@@ -24,6 +24,20 @@ export type PaymentInput = {
 	notes?: string;
 };
 
+type PaymentRow = {
+	repair_id: string;
+	amount: number | string | null;
+};
+
+type RepairRow = {
+	id: string;
+	repair_number: string | null;
+	customer_id: string;
+	estimated_cost: number | string | null;
+	customers: { name: string }[] | null;
+	devices: { name: string }[] | null;
+};
+
 async function requireStaff() {
 	const user = await getAuthenticatedUser();
 	if (!user || String(user.role).toLowerCase() === "user") {
@@ -48,17 +62,17 @@ export async function getPaymentDataAction(): Promise<{
 		if (paymentsError) return { repairs: [], error: paymentsError.message };
 
 		const paidByRepair = new Map<string, number>();
-		(payments || []).forEach((payment: any) => {
+		(payments as PaymentRow[] || []).forEach((payment) => {
 			paidByRepair.set(payment.repair_id, (paidByRepair.get(payment.repair_id) || 0) + Number(payment.amount || 0));
 		});
 
 		return {
-			repairs: (repairs || []).map((repair: any) => ({
+			repairs: (repairs as RepairRow[] || []).map((repair) => ({
 				id: repair.id,
 				repairNumber: repair.repair_number,
 				customerId: repair.customer_id,
-				customerName: repair.customers?.name || "Unknown customer",
-				deviceName: repair.devices?.name || "No device",
+				customerName: repair.customers?.[0]?.name || "Unknown customer",
+				deviceName: repair.devices?.[0]?.name || "No device",
 				estimatedCost: Number(repair.estimated_cost || 0),
 				paidAmount: paidByRepair.get(repair.id) || 0,
 			})),
@@ -81,7 +95,15 @@ export async function recordPaymentAction(input: PaymentInput) {
 		const laborCost = Math.max(0, Number(repair.estimated_cost) || 0);
 		const subtotal = laborCost + partsCost;
 		const tax = Number((subtotal * gstRate / 100).toFixed(2));
-		const total = Number((subtotal + tax).toFixed(2));
+		const invoiceTotal = Number((subtotal + tax).toFixed(2));
+		const { data: previousPayments, error: previousPaymentsError } = await supabase
+			.from("payments")
+			.select("amount")
+			.eq("repair_id", repair.id)
+			.eq("status", "COMPLETED");
+		if (previousPaymentsError) return { error: previousPaymentsError.message };
+		const paidAmount = (previousPayments || []).reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
+		const total = Number(Math.max(0, invoiceTotal - paidAmount).toFixed(2));
 		if (total <= 0) return { error: "Add a repair estimate or parts charge before taking payment." };
 		if (input.method === "UPI" && !input.transactionReference?.trim()) return { error: "Enter the UPI transaction reference." };
 

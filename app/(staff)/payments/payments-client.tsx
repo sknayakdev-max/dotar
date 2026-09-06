@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Banknote, CheckCircle2, CreditCard, FileText, Plus, Search, X } from "lucide-react";
+import { Banknote, CreditCard, FileText, Plus, Search, X } from "lucide-react";
 
 import DashboardHeader from "@/components/dashboard/header";
 import DashboardSidebar from "@/components/dashboard/sidebar";
@@ -41,7 +41,7 @@ function PaymentModal({ repairs, onClose, onSaved, onError }: { repairs: Payment
   const repair = repairs.find((entry) => entry.id === form.repairId);
   const subtotal = (repair?.estimatedCost || 0) + Number(form.partsCost || 0);
   const gst = subtotal * Number(form.gstRate || 0) / 100;
-  const total = subtotal + gst;
+  const total = Math.max(0, subtotal + gst - (repair?.paidAmount || 0));
   function update(field: keyof PaymentInput, value: string) { setForm((current) => ({ ...current, [field]: field === "partsCost" || field === "gstRate" ? Number(value) : value })); }
   async function submit(event: React.FormEvent) { event.preventDefault(); setSaving(true); const result = await recordPaymentAction(form); if (result.error) { onError(result.error); setSaving(false); return; } onSaved(form.repairId, result.amount || total); }
   return <div className="customer-drawer-overlay"><aside className="customer-drawer payment-drawer"><div className="customer-drawer-header"><div><p className="dashboard-kicker">COLLECT PAYMENT</p><h2>New payment</h2><p className="customer-drawer-subtitle">Add parts, GST, and choose how the customer paid.</p></div><button type="button" className="customer-drawer-close" onClick={onClose} aria-label="Close payment form"><X size={20} /></button></div><form onSubmit={submit} className="customer-form">

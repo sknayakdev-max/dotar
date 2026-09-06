@@ -27,6 +27,7 @@ export default function InventoryClient({ user, initialItems, initialError }: Pr
   const [items, setItems] = useState(initialItems);
   const [search, setSearch] = useState("");
   const [error, setError] = useState(initialError || "");
+  const [success, setSuccess] = useState("");
   const [editing, setEditing] = useState<InventoryItem | null>(null);
   const [creating, setCreating] = useState(false);
 
@@ -42,14 +43,17 @@ export default function InventoryClient({ user, initialItems, initialError }: Pr
     const result = await deleteInventoryAction(id);
     if (result.error) return setError(result.error);
     setItems((current) => current.filter((item) => item.id !== id));
+    setSuccess("Part removed from inventory.");
   }
 
   function saveItem(item: InventoryItem) {
+    const wasEditing = Boolean(editing);
     setItems((current) => current.some((entry) => entry.id === item.id)
       ? current.map((entry) => entry.id === item.id ? item : entry)
       : [...current, item].sort((a, b) => a.name.localeCompare(b.name)));
     setCreating(false);
     setEditing(null);
+    setSuccess(wasEditing ? "Part updated successfully." : "Part added successfully.");
   }
 
   return (
@@ -74,6 +78,7 @@ export default function InventoryClient({ user, initialItems, initialError }: Pr
           </div>
 
           <Toast message={error} tone="error" onClose={() => setError("")} />
+          <Toast message={success} onClose={() => setSuccess("")} />
 
           <div className="inventory-summary-row">
             <Summary label="Total parts" value={items.length} icon={<Package size={18} />} />

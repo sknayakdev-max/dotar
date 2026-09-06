@@ -31,6 +31,7 @@ export default function SettingsClient({ user }: { user: User }) {
   const [preferences, setPreferences] = useState<Preferences>(() => loadPreferences());
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     document.documentElement.dataset.theme = preferences.theme;
@@ -45,6 +46,7 @@ export default function SettingsClient({ user }: { user: User }) {
   function savePreferences() {
     window.localStorage.setItem(SETTINGS_KEY, JSON.stringify(preferences));
     setSaved(true);
+    setSuccess("Profile updated successfully.");
     setTimeout(() => setSaved(false), 2400);
   }
 
@@ -57,6 +59,7 @@ export default function SettingsClient({ user }: { user: User }) {
       return;
     }
     setSaved(true);
+    setSuccess("Password updated successfully.");
     setTimeout(() => setSaved(false), 2400);
   }
 
@@ -78,6 +81,7 @@ export default function SettingsClient({ user }: { user: User }) {
   return <div className="staff-dashboard"><DashboardSidebar user={{ ...user, name }} /><div className="dashboard-main"><DashboardHeader user={{ ...user, name }} /><main className="dashboard-content">
     <div className="dashboard-welcome"><div><p className="dashboard-kicker">WORKSPACE SETTINGS</p><h1>Settings</h1><p>Manage your profile, appearance, and repair payment defaults.</p></div></div>
     <Toast message={error} tone="error" onClose={() => setError("")} />
+    <Toast message={success} onClose={() => setSuccess("")} />
     <div className="settings-grid">
       <section className="dashboard-card settings-section"><div className="settings-section-heading"><span className="settings-icon"><UserRound size={18} /></span><div><h2>Profile</h2><p>Keep the name shown across your workspace up to date.</p></div></div><form className="settings-form" onSubmit={saveProfile}><label>Display name<input value={name} onChange={(event) => setName(event.target.value)} required /></label><label>Email<input value={user.email} readOnly /></label><button className="new-repair-button" type="submit"><Save size={15} /> Save profile</button></form></section>
       <section className="dashboard-card settings-section"><div className="settings-section-heading"><span className="settings-icon"><KeyRound size={18} /></span><div><h2>Password</h2><p>Verify your current password before setting a new one.</p></div></div><form className="settings-form" onSubmit={savePassword}><label>Current password<input type="password" autoComplete="current-password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} required /></label><label>New password<input type="password" autoComplete="new-password" minLength={8} value={newPassword} onChange={(event) => setNewPassword(event.target.value)} required /></label><label>Confirm new password<input type="password" autoComplete="new-password" minLength={8} value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} required /></label><button className="new-repair-button" type="submit"><KeyRound size={15} /> Update password</button></form></section>

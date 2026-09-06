@@ -98,7 +98,7 @@ export async function getServiceRequestsAction(): Promise<{
 
     return {
       data: (data || []).map(
-        (item: any) => ({
+        (item) => ({
           id: item.id,
           requestNumber:
             item.request_number,
@@ -155,7 +155,7 @@ export async function createServiceRequestAction(
     const requestNumber =
       `SR-${Date.now()}`;
 
-    const { error } =
+    const { data: createdRequest, error } =
       await supabase
         .from("service_requests")
         .insert({
@@ -200,7 +200,9 @@ export async function createServiceRequestAction(
 
           user_id:
             user.id,
-        });
+        })
+        .select("id, request_number, customer_name, phone, email, device_type, brand, model, serial_number, problem_description, additional_notes, preferred_contact, status, review_notes, created_at")
+        .single();
 
     if (error) {
       return {
@@ -214,6 +216,23 @@ export async function createServiceRequestAction(
 
     return {
       success: true,
+      request: {
+        id: createdRequest.id,
+        requestNumber: createdRequest.request_number,
+        customerName: createdRequest.customer_name,
+        phone: createdRequest.phone,
+        email: createdRequest.email,
+        deviceType: createdRequest.device_type,
+        brand: createdRequest.brand,
+        model: createdRequest.model,
+        serialNumber: createdRequest.serial_number,
+        problemDescription: createdRequest.problem_description,
+        additionalNotes: createdRequest.additional_notes,
+        preferredContact: createdRequest.preferred_contact,
+        status: createdRequest.status,
+        reviewNotes: createdRequest.review_notes,
+        createdAt: createdRequest.created_at,
+      } satisfies ServiceRequestItem,
     };
   } catch (error) {
     return {

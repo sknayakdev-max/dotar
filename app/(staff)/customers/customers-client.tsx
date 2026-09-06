@@ -47,6 +47,9 @@ export default function CustomersClient({
   const [error, setError] =
     useState(initialError || "");
 
+  const [success, setSuccess] =
+    useState("");
+
   const [editing, setEditing] =
     useState<CustomerItem | null>(null);
 
@@ -105,6 +108,7 @@ export default function CustomersClient({
           customer.id !== id
       )
     );
+    setSuccess("Customer deleted successfully.");
   }
 
   return (
@@ -181,6 +185,7 @@ export default function CustomersClient({
           ===================================================== */}
 
           <Toast message={error} tone="error" onClose={() => setError("")} />
+          <Toast message={success} onClose={() => setSuccess("")} />
 
           {/* =====================================================
               CUSTOMER TABLE
@@ -382,6 +387,7 @@ export default function CustomersClient({
           onClose={() => {
             setCreating(false);
             setEditing(null);
+            setSuccess(`${editing ? "Customer updated" : "Customer added"} successfully.`);
           }}
           onSaved={(customer) => {
 

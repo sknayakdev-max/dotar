@@ -77,6 +77,9 @@ export default function RepairsClient({
   const [error, setError] =
     useState(initialError || "");
 
+  const [success, setSuccess] =
+    useState("");
+
   const [creating, setCreating] =
     useState(false);
 
@@ -141,6 +144,7 @@ export default function RepairsClient({
           repair.id !== id
       )
     );
+    setSuccess("Repair deleted successfully.");
   }
 
   return (
@@ -214,6 +218,7 @@ export default function RepairsClient({
           ===================================================== */}
 
           <Toast message={error} tone="error" onClose={() => setError("")} />
+          <Toast message={success} onClose={() => setSuccess("")} />
 
           {/* =====================================================
               TABLE
@@ -440,6 +445,7 @@ export default function RepairsClient({
           onClose={() => {
             setCreating(false);
             setEditing(null);
+            setSuccess(`${editing ? "Repair updated" : "Repair created"} successfully.`);
           }}
           onSaved={(repair) => {
 

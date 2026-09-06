@@ -74,6 +74,9 @@ export default function ServiceRequestsClient({
   const [error, setError] =
     useState(initialError || "");
 
+  const [success, setSuccess] =
+    useState("");
+
   const filteredRequests =
     useMemo(() => {
       const query =
@@ -137,6 +140,7 @@ export default function ServiceRequestsClient({
           item.id !== id
       )
     );
+    setSuccess("Service request deleted successfully.");
   }
 
   async function handleStatus(
@@ -164,6 +168,7 @@ export default function ServiceRequestsClient({
           : item
       )
     );
+    setSuccess(`Request marked ${formatLabel(status).toLowerCase()}.`);
   }
 
   return (
@@ -187,6 +192,7 @@ export default function ServiceRequestsClient({
           />
 
           <Toast message={error} tone="error" onClose={() => setError("")} />
+          <Toast message={success} onClose={() => setSuccess("")} />
 
           <div className="dashboard-card">
 
@@ -393,6 +399,7 @@ export default function ServiceRequestsClient({
             ]);
 
             setShowCreate(false);
+            setSuccess("Service request created successfully.");
           }}
         />
       )}
@@ -526,12 +533,9 @@ function CreateRequestModal({
       return;
     }
 
-    /*
-     * Reloading the page is deliberately avoided.
-     * The server action succeeds, then we reload
-     * the page so the exact database row is used.
-     */
-    window.location.reload();
+    if (result.request) {
+      onCreated(result.request);
+    }
   }
 
   return (
@@ -969,10 +973,7 @@ function Detail({
 function formatLabel(
   value: string
 ) {
-  return String(value)
-    .toLowerCase()
-    .replaceAll("_", " ")
-    .replace(
+  return String(value).replace(
       /\b\w/g,
       (char) =>
         char.toUpperCase()

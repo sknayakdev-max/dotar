@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request: { headers: request.headers } })
 
   const supabase = createServerClient(
@@ -21,7 +21,9 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
+  // Read role directly from token metadata (Fast & Reliable)
   const role = (user?.app_metadata?.role || user?.user_metadata?.role || 'staff').toLowerCase()
+
   const isStaffRoute = request.nextUrl.pathname.startsWith('/dashboard')
 
   if (isStaffRoute && !['staff', 'admin', 'super_admin'].includes(role)) {

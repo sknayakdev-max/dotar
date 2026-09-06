@@ -1,3 +1,15 @@
 export const dynamic = "force-dynamic";
 
-export default function Page() { return <div className="p-6"><h1>Page</h1></div>; }
+import { redirect } from "next/navigation";
+
+import { getAuthenticatedUser } from "../dashboard/actions";
+import { getPaymentDataAction } from "./actions";
+import PaymentsClient from "./payments-client";
+
+export default async function PaymentsPage() {
+  const user = await getAuthenticatedUser();
+  if (!user || String(user.role).toLowerCase() === "user") redirect("/");
+
+  const result = await getPaymentDataAction();
+  return <PaymentsClient user={user} initialRepairs={result.repairs} initialError={result.error} />;
+}

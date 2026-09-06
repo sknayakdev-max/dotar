@@ -1,3 +1,11 @@
-export const dynamic = "force-dynamic";
+import { redirect } from "next/navigation";
+import { getAuthenticatedUser } from "../dashboard/actions";
+import { getEmployeesAction } from "./actions";
+import EmployeesClient from "./employees-client";
 
-export default function Page() { return <div className="p-6"><h1>Page</h1></div>; }
+export default async function EmployeesPage() {
+  const user = await getAuthenticatedUser();
+  if (!user || !["super_admin", "admin", "manager"].includes(String(user.role).toLowerCase())) redirect("/");
+  const result = await getEmployeesAction();
+  return <EmployeesClient user={user} initialEmployees={result.data} initialError={result.error} />;
+}

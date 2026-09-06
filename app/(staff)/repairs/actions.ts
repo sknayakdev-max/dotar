@@ -1,9 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 import { createClient } from "@/lib/supabase/server";
 import { getAuthenticatedUser } from "../dashboard/actions";
+
+function createAdminClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceRoleKey) return null;
+
+  return createSupabaseClient(url, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}
 
 /* =========================================================
    TYPES
@@ -59,6 +70,7 @@ export type DeviceOption = {
 export type EmployeeOption = {
   id: string;
   name: string;
+  role: string;
 };
 
 export type RepairFormData = {
@@ -433,6 +445,8 @@ export async function getRepairFormDataAction(): Promise<{
 
     const supabase =
       await createClient();
+    const profileClient =
+      createAdminClient() || supabase;
 
     const [
       customersResult,
@@ -460,16 +474,20 @@ export async function getRepairFormDataAction(): Promise<{
         }),
 
       /* Employees */
-      supabase
+      profileClient
         .from("profiles")
         .select(
           "id, full_name, role"
         )
         .in("role", [
+          "SUPER_ADMIN",
+          "super_admin",
+          "ADMIN",
+          "admin",
+          "MANAGER",
+          "manager",
           "EMPLOYEE",
           "employee",
-          "STAFF",
-          "staff",
         ])
         .order("full_name", {
           ascending: true,
@@ -544,6 +562,8 @@ export async function getRepairFormDataAction(): Promise<{
             name:
               employee.full_name ||
               "Employee",
+            role:
+              String(employee.role || "EMPLOYEE").toUpperCase(),
           })
         ),
     };

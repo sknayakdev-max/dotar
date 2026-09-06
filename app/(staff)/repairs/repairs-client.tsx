@@ -829,6 +829,7 @@ function RepairDrawer({
                     value={employee.id}
                   >
                     {employee.name}
+                    {` — ${formatRole(employee.role)}`}
                   </option>
                 )
               )}
@@ -1125,6 +1126,10 @@ function RepairDrawer({
 
     </div>
   );
+}
+
+function formatRole(role: string) {
+  return role === "SUPER_ADMIN" ? "Super Admin" : role.charAt(0) + role.slice(1).toLowerCase();
 }
 
 function NewCustomerDialog({

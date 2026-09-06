@@ -234,7 +234,6 @@ function getDashboardTitle(role: UserRole | string) {
       return "Manager Dashboard";
 
     case "EMPLOYEE":
-    case "STAFF":
       return "My Repair Dashboard";
 
     default:

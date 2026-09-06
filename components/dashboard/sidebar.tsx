@@ -17,7 +17,7 @@ import {
   Wrench,
 } from "lucide-react";
 
-import type { User, UserRole } from "@/lib/types";
+import type { User } from "@/lib/types";
 
 type NavigationItem = {
   href: string;
@@ -37,7 +37,6 @@ const adminItems: NavigationItem[] = [
   { href: "/payments", label: "Payments", icon: CreditCard },
   { href: "/invoices", label: "Invoices", icon: FileText },
   { href: "/employees", label: "Employees", icon: UserCog },
-  { href: "/users", label: "Users", icon: Users },
   { href: "/reports", label: "Reports", icon: BarChart3 },
   { href: "/activity", label: "Activity Logs", icon: Activity },
   { href: "/settings", label: "Settings", icon: Settings },
@@ -69,7 +68,6 @@ const navigation: Record<string, NavigationItem[]> = {
   SUPER_ADMIN: adminItems,
   MANAGER: managerItems,
   EMPLOYEE: employeeItems,
-  STAFF: employeeItems,
   USER: [],
 };
 

@@ -32,7 +32,6 @@ const adminNavigation: NavigationItem[] = [
   { title: "Payments", href: "/payments", icon: CreditCard },
   { title: "Invoices", href: "/invoices", icon: FileText },
   { title: "Employees", href: "/employees", icon: UserCog },
-  { title: "Users", href: "/users", icon: Users },
   { title: "Reports", href: "/reports", icon: BarChart3 },
   { title: "Activity Logs", href: "/activity", icon: Activity },
   { title: "Settings", href: "/settings", icon: Settings },
@@ -56,9 +55,8 @@ export const dashboardNavigation: Record<UserRole, NavigationItem[]> = {
     ].includes(item.title)
   ),
   EMPLOYEE: adminNavigation.filter((item) =>
-    ["Dashboard", "Repairs", "Customers", "Devices", "Notifications"].includes(
+    ["Dashboard", "Repairs", "Customers", "Devices"].includes(
       item.title
     )
   ),
-  USER: [],
 };

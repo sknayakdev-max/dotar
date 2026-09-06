@@ -27,9 +27,7 @@ export default function DashboardClient({
   const normalizedRole =
     String(user.role).toUpperCase();
 
-  const isEmployee =
-    normalizedRole === "EMPLOYEE" ||
-    normalizedRole === "STAFF";
+  const isEmployee = normalizedRole === "EMPLOYEE";
 
   return (
     <div className="staff-dashboard">

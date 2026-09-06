@@ -29,9 +29,9 @@ export async function loginAction(
     .eq("id", data.user.id)
     .single();
 
-  const role = (profile?.role as UserRole) || "USER";
+  const role = profile?.role as UserRole | undefined;
 
-  if (role === "USER") {
+  if (!role) {
     redirect("/");
   } else {
     redirect("/dashboard");

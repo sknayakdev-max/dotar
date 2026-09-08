@@ -1,4 +1,7 @@
 import { NextResponse } from "next/server";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 // Adjust this path to point to your existing Supabase client file:
 import { supabase } from "@/lib/supabase/client"; 
 

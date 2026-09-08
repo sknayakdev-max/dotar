@@ -375,8 +375,8 @@ export default function RepairsClient({
                                     repair
                                   )
                                 }
-                                title="View repair"
-                                aria-label="View repair"
+                                title="View repair details"
+                                aria-label={`View details for ${repair.repairNumber || repair.customerName}`}
                               >
                                 <Eye size={16} />
                               </button>
@@ -671,7 +671,7 @@ function RepairDrawer({
   return (
     <div className="customer-drawer-overlay">
 
-      <aside className="customer-drawer repair-drawer">
+      <aside className="customer-drawer repair-drawer" role="dialog" aria-modal="true" aria-labelledby="repair-details-title">
 
         {/* HEADER */}
 
@@ -683,7 +683,7 @@ function RepairDrawer({
               REPAIR
             </p>
 
-            <h2>
+            <h2 id="repair-details-title">
               {repair
                 ? "Edit repair"
                 : "Add repair"}
@@ -1482,6 +1482,10 @@ function RepairDetails({
             }
           />
 
+        </div>
+
+        <div className="repair-details-footer">
+          <button type="button" className="customer-cancel-button" onClick={onClose}>Close</button>
         </div>
 
       </aside>

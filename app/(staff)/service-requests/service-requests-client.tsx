@@ -758,11 +758,11 @@ function RequestDetailsModal({
   onClose: () => void;
 }) {
   return (
-    <div className="modal-overlay">
+    <div className="customer-drawer-overlay">
 
-      <div className="modal-card">
+      <aside className="customer-drawer request-details-drawer" role="dialog" aria-modal="true" aria-labelledby="request-details-title">
 
-        <div className="modal-header">
+        <div className="customer-drawer-header">
 
           <div>
 
@@ -780,7 +780,7 @@ function RequestDetailsModal({
 
           <button
             type="button"
-            className="icon-button"
+            className="customer-drawer-close"
             onClick={onClose}
             aria-label="Close request details"
           >
@@ -794,7 +794,7 @@ function RequestDetailsModal({
           <span className="request-details-reference">Reference: {request.requestNumber || request.id.slice(0, 8)}</span>
         </div>
 
-        <div className="details-grid">
+        <div className="customer-details request-details-grid">
 
           <Detail
             label="Customer"
@@ -846,7 +846,7 @@ function RequestDetailsModal({
             )}
           />
 
-          <div className="detail-full">
+          <div className="customer-detail-full">
             <Detail
               label="Problem"
               value={
@@ -855,7 +855,7 @@ function RequestDetailsModal({
             />
           </div>
 
-          <div className="detail-full">
+          <div className="customer-detail-full">
             <Detail
               label="Additional notes"
               value={
@@ -865,7 +865,7 @@ function RequestDetailsModal({
             />
           </div>
 
-          <div className="detail-full">
+          <div className="customer-detail-full">
             <Detail
               label="Review notes"
               value={
@@ -878,10 +878,10 @@ function RequestDetailsModal({
         </div>
 
         <div className="request-details-footer">
-          <button type="button" className="secondary-button" onClick={onClose}>Close</button>
+          <button type="button" className="customer-cancel-button" onClick={onClose}>Close</button>
         </div>
 
-      </div>
+      </aside>
 
     </div>
   );
@@ -941,7 +941,7 @@ function Detail({
   value: string;
 }) {
   return (
-    <div className="detail-item">
+    <div className="customer-detail-item">
 
       <span>{label}</span>
 

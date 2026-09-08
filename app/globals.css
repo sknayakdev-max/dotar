@@ -5180,6 +5180,114 @@ input[type="search"]::-webkit-search-cancel-button {
   box-shadow: 0 20px 60px rgba(15, 35, 55, 0.2);
 }
 
+.request-details-drawer {
+  width: min(680px, 100vw);
+}
+
+.request-details-drawer-body {
+  overflow-y: auto;
+  max-height: calc(100vh - 105px);
+}
+
+.request-details-drawer .customer-details {
+  padding-top: 18px;
+}
+
+.request-details-grid .customer-detail-full {
+  grid-column: 1 / -1;
+}
+
+.request-details-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 26px 24px;
+}
+
+.repair-drawer {
+  width: min(680px, 100vw);
+}
+
+.repair-drawer .repair-details {
+  max-height: calc(100vh - 165px);
+  overflow-y: auto;
+  padding: 20px 26px 8px;
+}
+
+.repair-detail-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.repair-status,
+.repair-priority {
+  display: inline-flex;
+  padding: 6px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.repair-status-received,
+.repair-status-diagnosing,
+.repair-status-in_progress { background: #fff4df; color: #a46013; }
+.repair-status-ready,
+.repair-status-completed { background: #eaf7ef; color: #287347; }
+.repair-status-cancelled { background: #fff0f0; color: #a63131; }
+.repair-priority-low,
+.repair-priority-normal { background: #eef2f5; color: #607486; }
+.repair-priority-high,
+.repair-priority-urgent { background: #fff0f0; color: #a63131; }
+
+.repair-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.repair-detail-grid .customer-detail-item {
+  padding: 13px 14px;
+  border: 1px solid #e1e8ee;
+  border-radius: 10px;
+  background: #f8fafb;
+}
+
+.repair-detail-text {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border: 1px solid #e1e8ee;
+  border-radius: 10px;
+  background: #f8fafb;
+}
+
+.repair-detail-text span {
+  display: block;
+  margin-bottom: 7px;
+  color: #718396;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.repair-detail-text p {
+  margin: 0;
+  color: #17344e;
+  font-size: 14px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.repair-details-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 26px 24px;
+}
+
 /* Service request details modal overrides */
 .request-details-modal {
   width: min(720px, calc(100vw - 32px)) !important;
@@ -5229,6 +5337,10 @@ input[type="search"]::-webkit-search-cancel-button {
 .request-details-modal .detail-full { grid-column: 1 / -1 !important; }
 
 @media (max-width: 640px) {
+  .repair-drawer .repair-details { padding: 18px; }
+  .repair-detail-grid { grid-template-columns: 1fr; }
+  .repair-details-footer { padding: 0 18px 20px; }
+
   .request-details-modal > .details-grid { grid-template-columns: 1fr !important; padding: 16px 18px 22px !important; }
   .request-details-modal .detail-full { grid-column: auto !important; }
   .request-details-modal > .modal-header { padding-left: 18px !important; padding-right: 18px !important; }

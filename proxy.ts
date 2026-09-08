@@ -24,7 +24,9 @@ export async function proxy(request: NextRequest) {
   const role = (user?.app_metadata?.role || user?.user_metadata?.role || 'staff').toLowerCase()
   const isStaffRoute = request.nextUrl.pathname.startsWith('/dashboard')
 
-  if (isStaffRoute && !['staff', 'admin', 'super_admin'].includes(role)) {
+  // Managers and employees are staff users too. Their role is stored in the
+  // profile/Auth metadata when an employee is created.
+  if (isStaffRoute && !['staff', 'employee', 'manager', 'admin', 'super_admin'].includes(role)) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 

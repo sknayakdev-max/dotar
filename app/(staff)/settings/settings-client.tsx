@@ -24,6 +24,7 @@ const defaultPreferences: Preferences = {
 };
 
 export default function SettingsClient({ user }: { user: User }) {
+  const canManageGst = ["admin", "super_admin"].includes(String(user.role).toLowerCase());
   const [name, setName] = useState(user.name);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -44,7 +45,12 @@ export default function SettingsClient({ user }: { user: User }) {
   }
 
   function savePreferences() {
-    window.localStorage.setItem(SETTINGS_KEY, JSON.stringify(preferences));
+    // GST is an administrator-controlled workspace setting. Keep the existing
+    // value when a manager or employee saves their other preferences.
+    const preferencesToSave = canManageGst
+      ? preferences
+      : { ...preferences, gstRate: loadPreferences().gstRate };
+    window.localStorage.setItem(SETTINGS_KEY, JSON.stringify(preferencesToSave));
     setSaved(true);
     setSuccess("Profile updated successfully.");
     setTimeout(() => setSaved(false), 2400);
@@ -79,16 +85,15 @@ export default function SettingsClient({ user }: { user: User }) {
   }
 
   return <div className="staff-dashboard"><DashboardSidebar user={{ ...user, name }} /><div className="dashboard-main"><DashboardHeader user={{ ...user, name }} /><main className="dashboard-content">
-    <div className="dashboard-welcome"><div><p className="dashboard-kicker">WORKSPACE SETTINGS</p><h1>Settings</h1><p>Manage your profile, appearance, and repair payment defaults.</p></div></div>
+    <div className="dashboard-welcome settings-welcome"><div><p className="dashboard-kicker">WORKSPACE SETTINGS</p><h1>Settings</h1><p>Manage your profile, appearance, and repair payment defaults.</p></div><button type="button" className="new-repair-button" onClick={savePreferences}>{saved ? <><Check size={15} /> Saved</> : <><Save size={15} /> Save preferences</>}</button></div>
     <Toast message={error} tone="error" onClose={() => setError("")} />
     <Toast message={success} onClose={() => setSuccess("")} />
     <div className="settings-grid">
       <section className="dashboard-card settings-section"><div className="settings-section-heading"><span className="settings-icon"><UserRound size={18} /></span><div><h2>Profile</h2><p>Keep the name shown across your workspace up to date.</p></div></div><form className="settings-form" onSubmit={saveProfile}><label>Display name<input value={name} onChange={(event) => setName(event.target.value)} required /></label><label>Email<input value={user.email} readOnly /></label><button className="new-repair-button" type="submit"><Save size={15} /> Save profile</button></form></section>
       <section className="dashboard-card settings-section"><div className="settings-section-heading"><span className="settings-icon"><KeyRound size={18} /></span><div><h2>Password</h2><p>Verify your current password before setting a new one.</p></div></div><form className="settings-form" onSubmit={savePassword}><label>Current password<input type="password" autoComplete="current-password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} required /></label><label>New password<input type="password" autoComplete="new-password" minLength={8} value={newPassword} onChange={(event) => setNewPassword(event.target.value)} required /></label><label>Confirm new password<input type="password" autoComplete="new-password" minLength={8} value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} required /></label><button className="new-repair-button" type="submit"><KeyRound size={15} /> Update password</button></form></section>
       <section className="dashboard-card settings-section"><div className="settings-section-heading"><span className="settings-icon"><Sun size={18} /></span><div><h2>Appearance</h2><p>Choose the interface theme for this browser.</p></div></div><div className="theme-toggle"><button type="button" className={preferences.theme === "light" ? "selected" : ""} onClick={() => updatePreference("theme", "light")}><Sun size={16} /> Light</button><button type="button" className={preferences.theme === "dark" ? "selected" : ""} onClick={() => updatePreference("theme", "dark")}><Moon size={16} /> Dark</button></div></section>
-      <section className="dashboard-card settings-section"><div className="settings-section-heading"><span className="settings-icon"><Bell size={18} /></span><div><h2>Operations</h2><p>Set sensible defaults for alerts and payment collection.</p></div></div><div className="settings-form"><label>Default GST rate (%)<input type="number" min="0" max="100" step="0.01" value={preferences.gstRate} onChange={(event) => updatePreference("gstRate", event.target.value)} /></label><label>Alert refresh interval<select value={preferences.alertRefresh} onChange={(event) => updatePreference("alertRefresh", event.target.value)}><option value="15">Every 15 seconds</option><option value="30">Every 30 seconds</option><option value="60">Every minute</option></select></label></div></section>
+      <section className="dashboard-card settings-section"><div className="settings-section-heading"><span className="settings-icon"><Bell size={18} /></span><div><h2>Operations</h2><p>Set sensible defaults for alerts and payment collection.</p></div></div><div className="settings-form">{canManageGst ? <label>Default GST rate (%)<input type="number" min="0" max="100" step="0.01" value={preferences.gstRate} onChange={(event) => updatePreference("gstRate", event.target.value)} /></label> : null}<label>Alert refresh interval<select value={preferences.alertRefresh} onChange={(event) => updatePreference("alertRefresh", event.target.value)}><option value="15">Every 15 seconds</option><option value="30">Every 30 seconds</option><option value="60">Every minute</option></select></label></div></section>
     </div>
-    <div className="settings-save-row"><button type="button" className="new-repair-button" onClick={savePreferences}>{saved ? <><Check size={15} /> Saved</> : <><Save size={15} /> Save preferences</>}</button></div>
   </main></div></div>;
 }
 

@@ -30,6 +30,7 @@ type NavigationItem = {
 
 const adminItems: NavigationItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
+    { href: "/service-requests", label: "Service Requests", icon: ClipboardList },
   { href: "/repairs", label: "Repairs", icon: Wrench },
   { href: "/customers", label: "Customers", icon: Users },
   { href: "/devices", label: "Devices", icon: Laptop },
@@ -53,6 +54,7 @@ const managerItems: NavigationItem[] = [
   { href: "/invoices", label: "Invoices", icon: FileText },
   { href: "/employees", label: "Employees", icon: UserCog },
   { href: "/reports", label: "Reports", icon: BarChart3 },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 const employeeItems: NavigationItem[] = [
@@ -61,6 +63,7 @@ const employeeItems: NavigationItem[] = [
   { href: "/repairs", label: "Repairs", icon: Wrench },
   { href: "/customers", label: "Customers", icon: Users },
   { href: "/devices", label: "Devices", icon: Laptop },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 // Explicitly type navigation using Record<UserRole, NavigationItem[]> if enforcing UserRole

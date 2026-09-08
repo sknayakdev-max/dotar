@@ -101,11 +101,15 @@ export async function inviteEmployeeAction(input: EmployeeInput) {
 
 		const admin = createAdminClient();
 		if (!admin) return { error: "Supabase admin configuration is missing." };
-		const { data: usersData, error: usersError } = await admin.auth.admin.listUsers();
+		// Search Auth by email before creating a user. `listUsers` is paginated, so
+		// request a large page here to avoid creating duplicate accounts in larger
+		// workspaces.
+		const { data: usersData, error: usersError } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
 		if (usersError) return { error: usersError.message };
 		const existingUser = usersData.users.find((user) => user.email?.toLowerCase() === email);
 		let userId = existingUser?.id;
 		let temporaryPassword: string | undefined;
+		let createdAuthUser = false;
 
 		if (!userId) {
 			temporaryPassword = `FixDesk-${randomBytes(9).toString("base64url")}`;
@@ -117,6 +121,7 @@ export async function inviteEmployeeAction(input: EmployeeInput) {
 			});
 			if (error || !data.user) return { error: error?.message || "Failed to create employee account." };
 			userId = data.user.id;
+			createdAuthUser = true;
 		}
 
 		const { error: profileError } = await admin.from("profiles").upsert({
@@ -125,7 +130,12 @@ export async function inviteEmployeeAction(input: EmployeeInput) {
 			full_name: name,
 			role: input.role.toLowerCase(),
 		});
-		if (profileError) return { error: profileError.message };
+		if (profileError) {
+			// Keep Auth and profiles in sync when the database write fails after a
+			// newly-created Auth account.
+			if (createdAuthUser && userId) await admin.auth.admin.deleteUser(userId);
+			return { error: profileError.message };
+		}
 
 		revalidatePath("/employees");
 		return {

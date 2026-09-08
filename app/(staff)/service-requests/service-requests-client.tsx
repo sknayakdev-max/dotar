@@ -186,6 +186,10 @@ export default function ServiceRequestsClient({
             title="Service Requests"
             description="Review and manage incoming repair requests."
             buttonText="New request"
+            search={search}
+            onSearchChange={setSearch}
+            statusFilter={statusFilter}
+            onStatusChange={setStatusFilter}
             onClick={() =>
               setShowCreate(true)
             }
@@ -195,49 +199,6 @@ export default function ServiceRequestsClient({
           <Toast message={success} onClose={() => setSuccess("")} />
 
           <div className="dashboard-card">
-
-            <div className="page-toolbar">
-
-              <div className="search-box">
-                <Search size={17} />
-
-                <input
-                  value={search}
-                  onChange={(event) =>
-                    setSearch(
-                      event.target.value
-                    )
-                  }
-                  placeholder="Search requests..."
-                />
-              </div>
-
-              <select
-                value={statusFilter}
-                onChange={(event) =>
-                  setStatusFilter(
-                    event.target.value
-                  )
-                }
-                className="page-select"
-              >
-                <option value="ALL">
-                  All statuses
-                </option>
-
-                {STATUSES.map(
-                  (status) => (
-                    <option
-                      key={status}
-                      value={status}
-                    >
-                      {formatLabel(status)}
-                    </option>
-                  )
-                )}
-              </select>
-
-            </div>
 
             <div className="overflow-x-auto">
 
@@ -425,11 +386,19 @@ function PageHeader({
   title,
   description,
   buttonText,
+  search,
+  onSearchChange,
+  statusFilter,
+  onStatusChange,
   onClick,
 }: {
   title: string;
   description: string;
   buttonText: string;
+  search: string;
+  onSearchChange: (value: string) => void;
+  statusFilter: string;
+  onStatusChange: (value: string) => void;
   onClick: () => void;
 }) {
   return (
@@ -447,14 +416,20 @@ function PageHeader({
 
       </div>
 
-      <button
-        type="button"
-        className="new-repair-button"
-        onClick={onClick}
-      >
-        <Plus size={16} />
-        {buttonText}
-      </button>
+      <div className="service-request-header-actions">
+        <div className="customer-search-box">
+          <Search size={17} />
+          <input value={search} onChange={(event) => onSearchChange(event.target.value)} placeholder="Search requests..." aria-label="Search requests" />
+        </div>
+        <select value={statusFilter} onChange={(event) => onStatusChange(event.target.value)} className="page-select" aria-label="Filter service requests by status">
+          <option value="ALL">All statuses</option>
+          {STATUSES.map((status) => <option key={status} value={status}>{formatLabel(status)}</option>)}
+        </select>
+        <button type="button" className="new-repair-button" onClick={onClick}>
+          <Plus size={16} />
+          {buttonText}
+        </button>
+      </div>
 
     </div>
   );
@@ -539,9 +514,9 @@ function CreateRequestModal({
   }
 
   return (
-    <div className="modal-overlay">
+    <div className="modal-overlay" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
 
-      <div className="modal-card">
+      <div className="modal-card request-details-modal" role="dialog" aria-modal="true" aria-labelledby="request-details-title">
 
         <div className="modal-header">
 
@@ -794,10 +769,11 @@ function RequestDetailsModal({
               SERVICE REQUEST
             </p>
 
-            <h2>
+            <h2 id="request-details-title">
               {request.requestNumber ||
                 request.id}
             </h2>
+            <p className="request-details-subtitle">Submitted {formatDate(request.createdAt)}</p>
 
           </div>
 
@@ -805,10 +781,16 @@ function RequestDetailsModal({
             type="button"
             className="icon-button"
             onClick={onClose}
+            aria-label="Close request details"
           >
             <X size={18} />
           </button>
 
+        </div>
+
+        <div className="request-details-status-row">
+          <span className={`request-details-status ${getStatusClass(request.status)}`}>{formatLabel(request.status)}</span>
+          <span className="request-details-reference">Reference: {request.requestNumber || request.id.slice(0, 8)}</span>
         </div>
 
         <div className="details-grid">
@@ -892,6 +874,10 @@ function RequestDetailsModal({
             />
           </div>
 
+        </div>
+
+        <div className="request-details-footer">
+          <button type="button" className="secondary-button" onClick={onClose}>Close</button>
         </div>
 
       </div>

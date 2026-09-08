@@ -19,16 +19,16 @@ export async function loginAction(prevState: any, formData: FormData) {
     return { error: error?.message || 'Invalid credentials' };
   }
 
-  // Debug step: Fetch role
+  // The employee role is stored in profiles, not users.
   const { data: profile, error: profileErr } = await supabase
-    .from('users')
+    .from('profiles')
     .select('role')
     .eq('id', data.user.id)
     .single();
 
-  console.log('🔍 DEBUG LOGIN ROLE:', profile?.role, 'Fetch Error:', profileErr);
+  if (profileErr || !profile?.role) {
+    return { error: 'Your account has no staff profile. Please ask an administrator to add you as an employee.' };
+  }
 
-  // Hardcode redirect to force test
-  console.log('🚀 Executing redirect to /dashboard...');
   redirect('/dashboard');
 }

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Bell, Search, Wrench, Package, X } from "lucide-react";
+import { Bell, Wrench, Package, X } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 import type { User, UserRole } from "@/lib/types";
@@ -128,17 +128,6 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
       </div>
 
       <div className="dashboard-header-actions">
-        {/* Search */}
-        <div className="dashboard-search">
-          <Search size={17} className="text-slate-400" />
-
-          <input
-            type="search"
-            placeholder="Search..."
-            aria-label="Search"
-          />
-        </div>
-
         {/* Notification */}
         <div className="dashboard-alerts">
           <button

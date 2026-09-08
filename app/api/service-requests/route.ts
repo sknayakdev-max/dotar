@@ -1,6 +1,15 @@
 import { NextResponse } from "next/server";
-// Adjust this path to point to your existing Supabase client file:
-import { supabase } from "@/lib/supabase/client"; 
+import { createClient } from "@supabase/supabase-js";
+
+function createAdminClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceRoleKey) return null;
+
+  return createClient(url, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}
 
 export async function POST(request: Request) {
   try {
@@ -18,7 +27,15 @@ export async function POST(request: Request) {
     } = body;
 
     // 1. Basic Validation
-    if (!customerName || !phone || !deviceType || !problemDescription) {
+    if (
+      typeof customerName !== "string" ||
+      typeof phone !== "string" ||
+      typeof deviceType !== "string" ||
+      typeof problemDescription !== "string" ||
+      !customerName.trim() ||
+      !phone.trim() ||
+      !problemDescription.trim()
+    ) {
       return NextResponse.json(
         { error: "Missing required fields." },
         { status: 400 }
@@ -26,22 +43,32 @@ export async function POST(request: Request) {
     }
 
     // 2. Generate a custom tracking number
-    const requestNumber = `REQ-${Math.floor(1000 + Math.random() * 9000)}`;
+    const requestNumber = `REQ-${Date.now()}`;
+
+    const admin = createAdminClient();
+    if (!admin) {
+      return NextResponse.json(
+        { error: "Supabase server configuration is missing." },
+        { status: 500 }
+      );
+    }
 
     // 3. Insert into Supabase table
-    const { data, error } = await supabase
+    const { data, error } = await admin
       .from("service_requests")
       .insert([
         {
           request_number: requestNumber,
-          customer_name: customerName,
-          phone: phone,
-          email: email || null,
+          customer_name: customerName.trim(),
+          phone: phone.trim(),
+          email: typeof email === "string" && email.trim() ? email.trim().toLowerCase() : null,
           device_type: deviceType,
-          brand: brand || null,
-          model: model || null,
-          problem_description: problemDescription,
+          brand: typeof brand === "string" && brand.trim() ? brand.trim() : null,
+          model: typeof model === "string" && model.trim() ? model.trim() : null,
+          problem_description: problemDescription.trim(),
           preferred_contact: preferredContact || "PHONE",
+          status: "PENDING_REVIEW",
+          user_id: null,
         },
       ])
       .select()

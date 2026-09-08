@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 const DEVICE_TYPES = [
   { label: "Laptop", value: "LAPTOP" },
@@ -108,6 +109,9 @@ export default function RequestServicePage() {
                 >
                   Send another request
                 </button>
+                <Link className="secondary-button" href="/">
+                  Back to home
+                </Link>
               </div>
             ) : (
               <form onSubmit={submit} className="service-form">

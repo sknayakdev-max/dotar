@@ -306,7 +306,8 @@ export default function ServiceRequestsClient({
                                     request
                                   )
                                 }
-                                title="View"
+                                title="View request details"
+                                aria-label={`View details for ${request.requestNumber || request.customerName}`}
                               >
                                 <Eye
                                   size={16}

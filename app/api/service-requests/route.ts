@@ -13,6 +13,43 @@ function createAdminClient() {
   });
 }
 
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const requestNumber = url.searchParams.get("requestNumber")?.trim();
+  const phone = url.searchParams.get("phone")?.trim();
+
+  if (!requestNumber || !phone) {
+    return NextResponse.json({ error: "Request number and phone are required." }, { status: 400 });
+  }
+
+  const admin = createAdminClient();
+  if (!admin) {
+    return NextResponse.json({ error: "Supabase server configuration is missing." }, { status: 500 });
+  }
+
+  const { data, error } = await admin
+    .from("service_requests")
+    .select("request_number, customer_name, device_type, status, review_notes, created_at, updated_at")
+    .eq("request_number", requestNumber)
+    .eq("phone", phone)
+    .maybeSingle();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (!data) return NextResponse.json({ error: "No repair request found for those details." }, { status: 404 });
+
+  return NextResponse.json({
+    request: {
+      requestNumber: data.request_number,
+      customerName: data.customer_name,
+      deviceType: data.device_type,
+      status: data.status,
+      reviewNotes: data.review_notes,
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+    },
+  }, { headers: { "Cache-Control": "no-store" } });
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();

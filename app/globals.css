@@ -5180,6 +5180,55 @@ input[type="search"]::-webkit-search-cancel-button {
   box-shadow: 0 20px 60px rgba(15, 35, 55, 0.2);
 }
 
+.track-result {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid #e5ebef;
+}
+
+.track-result-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.track-result-header h2 {
+  margin: 4px 0;
+  color: var(--navy);
+  font-family: Georgia, serif;
+  font-size: 24px;
+}
+
+.track-result-header p:not(.eyebrow) { color: var(--muted); font-size: 12px; }
+
+.track-status {
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: #fff4df;
+  color: #a46013;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.track-status-approved,
+.track-status-converted { background: #eaf7ef; color: #287347; }
+.track-status-rejected { background: #fff0f0; color: #a63131; }
+
+.track-timeline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 25px; }
+.track-step { display: flex; align-items: center; gap: 8px; color: #9aa8b4; font-size: 12px; }
+.track-step span { display: grid; place-items: center; width: 25px; height: 25px; border: 1px solid #dce4e9; border-radius: 50%; font-size: 11px; font-weight: 700; }
+.track-step.active { color: #287347; }
+.track-step.active span { border-color: #9ed1ae; background: #eaf7ef; }
+.track-note { margin-top: 22px; padding: 13px 14px; border-radius: 8px; background: #f4f8fa; color: #415a6e; font-size: 13px; line-height: 1.5; }
+.track-refresh-note { margin-top: 18px; color: #8a9aa7; font-size: 11px; }
+
+@media (max-width: 560px) {
+  .track-result-header { flex-direction: column; }
+  .track-timeline { grid-template-columns: 1fr; gap: 12px; }
+}
+
 .request-details-drawer {
   width: min(680px, 100vw);
 }

@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* remove output: 'export' */
+  experimental: {
+    useOffline: true,
+  },
 };
 
 export default nextConfig;

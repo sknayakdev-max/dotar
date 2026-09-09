@@ -36,6 +36,7 @@ export default function TrackRepairPage() {
       if (showLoading) setError(lookupError instanceof Error ? lookupError.message : "Unable to find that request.");
     } finally {
       if (showLoading) setLoading(false);
+      if (showLoading) window.dispatchEvent(new Event("app:loading-stop"));
     }
   }
 

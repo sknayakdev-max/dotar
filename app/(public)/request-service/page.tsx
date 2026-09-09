@@ -80,6 +80,7 @@ export default function RequestServicePage() {
       setError(err?.message || "An error occurred while submitting.");
     } finally {
       setLoading(false);
+      window.dispatchEvent(new Event("app:loading-stop"));
     }
   };
 

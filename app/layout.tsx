@@ -15,8 +15,41 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Dotar",
+  title: {
+    default: "Dotar Sojat Computer",
+    template: "%s | Dotar Sojat Computer",
+  },
   description: "Dotar - Fix your laptop.",
+  applicationName: "Dotar Sojat Computer",
+  metadataBase: new URL("https://dotarsojatcomputer.in"),
+  icons: {
+    icon: [
+      { url: "/dotar_logo.png", media: "(prefers-color-scheme: light)" },
+      { url: "/dotar_logo.png", media: "(prefers-color-scheme: dark)" },
+    ],
+    shortcut: "/dotar_logo.png",
+    apple: "/dotar_logo.png",
+  },
+  openGraph: {
+    title: "Dotar Sojat Computer",
+    description: "Laptop and computer repair services in Odisha.",
+    url: "https://dotarsojatcomputer.in",
+    siteName: "Dotar Sojat Computer",
+    images: [
+      {
+        url: "/dotar_logo.png",
+        width: 512,
+        height: 512,
+        alt: "Dotar Sojat Computer logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dotar Sojat Computer",
+    description: "Laptop and computer repair services in Odisha.",
+    images: ["/dotar_logo.png"],
+  },
 };
 
 export default function RootLayout({

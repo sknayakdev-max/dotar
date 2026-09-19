@@ -1,4 +1,5 @@
 // app/(public)/layout.tsx
+import Image from "next/image";
 import Link from "next/link";
 
 import PublicAuthLink from "@/components/public-auth-link";
@@ -12,8 +13,15 @@ export default function PublicLayout({
     <div className="site flex flex-col min-h-screen">
       <header className="site-header">
         <div className="container header-inner">
-          <Link href="/" className="brand">
-            <span className="brand-mark">DS</span>
+          <Link href="/" className="brand" aria-label="Dotar Sojat Computer home">
+            <Image
+              src="/dotar_logo.png"
+              alt="Dotar Sojat Computer logo"
+              width={40}
+              height={40}
+              className="brand-logo"
+              priority
+            />
             <span className="brand-name">
               Dotar Sojat <span>Computer</span>
             </span>
@@ -43,7 +51,13 @@ export default function PublicLayout({
           {/* Company Bio */}
           <div className="footer-company">
             <Link href="/" className="footer-brand">
-              <span className="footer-brand-mark">DS</span>
+              <Image
+                src="/dotar_logo.png"
+                alt="Dotar Sojat Computer logo"
+                width={36}
+                height={36}
+                className="footer-brand-logo"
+              />
               <strong>Dotar Sojat Computer</strong>
             </Link>
             <p>
@@ -57,7 +71,7 @@ export default function PublicLayout({
             <h3>Contact</h3>
             <p>☎ +91 98765 43210</p>
             <p>✉ service@dotarsojatcomputer.in</p>
-            <p>⌖ Main Market Road, Sojat, Rajasthan 306104</p>
+            <p>⌖ Hill Patna, Ram Nagar, Brahmapur, Odisha 760005</p>
           </div>
 
           {/* Business Hours */}

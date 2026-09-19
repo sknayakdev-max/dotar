@@ -76,7 +76,7 @@ export default function HomePage() {
       <section className="hero">
         <div className="container hero-inner">
           <div className="hero-content">
-            <div className="eyebrow">SOJAT, RAJASTHAN 306104</div>
+            <div className="eyebrow">HILL PATNA, RAM NAGAR, BRAHMAPUR, ODISHA 760005</div>
 
             <h1>
               Professional Computer
@@ -86,7 +86,7 @@ export default function HomePage() {
 
             <p className="hero-description">
               Fast, reliable hardware repair services for laptops, desktops
-              and computer components — with honest diagnosis and clear
+              and computer components with honest diagnosis and clear
               estimates before any work starts.
             </p>
 

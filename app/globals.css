@@ -198,25 +198,18 @@ img {
 .brand {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 6px;
   flex-shrink: 0;
+  line-height: 1;
 }
 
-.brand-mark {
+.brand-logo {
   width: 40px;
   height: 40px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 5px;
-
-  background: #e5b477;
-  color: var(--navy);
-
-  font-size: 16px;
-  font-weight: 800;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+  margin-right: 2px;
 }
 
 .brand-name {
@@ -758,24 +751,16 @@ img {
 .footer-brand {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 6px;
 }
 
-.footer-brand-mark {
+.footer-brand-logo {
   width: 28px;
   height: 28px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 4px;
-
-  background: var(--navy);
-  color: white;
-
-  font-size: 9px;
-  font-weight: 800;
+  object-fit: contain;
+  border-radius: 6px;
+  display: block;
+  margin-right: 2px;
 }
 
 .footer-brand strong {
@@ -2996,7 +2981,7 @@ tbody tr:last-child td {
     font-size: 14px;
   }
 
-  .brand-mark {
+  .brand-logo {
     width: 36px;
     height: 36px;
   }
